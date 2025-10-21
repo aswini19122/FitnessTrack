@@ -1,96 +1,224 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | FitnessTrack</title>
     <style>
-        /* Reset default styles */
+        /* ---------- Base Reset ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
             height: 100vh;
+            background: linear-gradient(135deg, #6bc4d8, #4bd5d0);
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #d6e1dfff, #6bc4d8ff);
         }
 
-        .register-container {
+        /* ---------- Register Card ---------- */
+        .register-card {
             background: #fff;
-            padding: 40px 30px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 350px;
-            text-align: center;
+            padding: 40px 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            width: 380px;
+            transition: transform 0.3s ease;
+        }
+
+        .register-card:hover {
+            transform: scale(1.02);
         }
 
         h2 {
-            margin-bottom: 30px;
             color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        /* ---------- Input Fields ---------- */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
         }
 
         input[type="text"],
         input[type="password"] {
             width: 100%;
-            padding: 12px 15px;
-            margin: 10px 0;
+            padding: 12px 45px 12px 15px;
             border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: 0.3s;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
         }
 
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: #438387ff;
-            box-shadow: 0 0 5px rgba(136, 234, 228, 0.5);
+        input:focus {
+            border-color: #4bd5d0;
             outline: none;
+            box-shadow: 0 0 5px rgba(75, 213, 208, 0.3);
         }
 
+        /* ---------- Password Toggle ---------- */
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 12px;
+            cursor: pointer;
+            color: #999;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        /* ---------- Button ---------- */
         button {
             width: 100%;
             padding: 12px;
-            margin-top: 15px;
-            background: #4bd5d0ff;
+            background: #4bd5d0;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             color: white;
             font-size: 16px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: background 0.3s;
         }
 
         button:hover {
-            background: #62d7dbff;
+            background: #39b9b5;
         }
 
-        a {
-            display: block;
+        /* ---------- Links ---------- */
+        .links {
+            text-align: center;
             margin-top: 20px;
-            text-decoration: none;
-            color: #33a89eff;
-            transition: 0.3s;
         }
 
-        a:hover {
-            color: #33a89eff;
+        .links a {
+            color: #33a89e;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        /* ---------- Error Message ---------- */
+        .error {
+            color: red;
+            font-size: 14px;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        /* ---------- Password Strength ---------- */
+        .strength {
+            text-align: left;
+            font-size: 13px;
+            margin-top: -8px;
+            color: #666;
+        }
+
+        @media (max-width: 420px) {
+            .register-card {
+                width: 90%;
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="register-container">
-        <h2>Register</h2>
-        <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+
+    <div class="register-card">
+        <h2>Create Your Account</h2>
+        <form method="POST" onsubmit="return validateForm()">
+            <div class="input-group">
+                <input type="text" id="username" name="username" placeholder="Username" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="Password" required minlength="6">
+                <span class="toggle-password" onclick="togglePassword('password', this)">👁️</span>
+                <div id="strength" class="strength"></div>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                <span class="toggle-password" onclick="togglePassword('confirmPassword', this)">👁️</span>
+            </div>
+
+            <div id="error" class="error"></div>
+
             <button type="submit">Register</button>
+
+            <div class="links">
+                <a href="/login">Already have an account? Login</a>
+            </div>
         </form>
-        <a href="/login">Already have an account? Login</a>
     </div>
+
+    <script>
+        // Toggle Password Visibility
+        function togglePassword(id, icon) {
+            const field = document.getElementById(id);
+            if (field.type === "password") {
+                field.type = "text";
+                icon.textContent = "🙈";
+            } else {
+                field.type = "password";
+                icon.textContent = "👁️";
+            }
+        }
+
+        // Password Strength Checker
+        document.getElementById("password").addEventListener("input", function() {
+            const strengthDiv = document.getElementById("strength");
+            const password = this.value;
+            let strength = "Weak";
+
+            if (password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password)) {
+                strength = "Strong";
+                strengthDiv.style.color = "green";
+            } else if (password.length >= 6) {
+                strength = "Medium";
+                strengthDiv.style.color = "orange";
+            } else {
+                strength = "Weak";
+                strengthDiv.style.color = "red";
+            }
+
+            strengthDiv.textContent = `Password Strength: ${strength}`;
+        });
+
+        // Form Validation
+        function validateForm() {
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const errorDiv = document.getElementById("error");
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = "Passwords do not match.";
+                return false;
+            }
+
+            if (password.length < 6) {
+                errorDiv.textContent = "Password must be at least 6 characters.";
+                return false;
+            }
+
+            if (!/[A-Z]/.test(password) || !/\d/.test(password)) {
+                errorDiv.textContent = "Password must include at least one uppercase letter and one number.";
+                return false;
+            }
+
+            errorDiv.textContent = "";
+            return true;
+        }
+    </script>
+
 </body>
 </html>
-

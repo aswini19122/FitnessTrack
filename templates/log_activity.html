@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Log Activity</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6bc4d8, #4bd5d0);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background: #4bd5d0;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #39b9b5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Log Daily Activity</h2>
+        <form method="POST">
+            <input type="number" name="steps" placeholder="Steps" required>
+            <input type="number" name="calories" placeholder="Calories Burned" required>
+            <select name="workout_type" required>
+                <option value="">Select Workout Type</option>
+                <option>Walking</option>
+                <option>Running</option>
+                <option>Yoga</option>
+                <option>Gym</option>
+                <option>Cycling</option>
+            </select>
+            <input type="number" name="duration" placeholder="Duration (minutes)" required>
+            <input type="number" step="0.1" name="sleep_hours" placeholder="Sleep Hours" required>
+            <button type="submit">Save Activity</button>
+        </form>
+    </div>
+</body>
+</html>
